@@ -10,11 +10,16 @@ function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
+function init_app(){
+	init_hot_yaml();
+	//init_draggable();
+	}
+
 function init_hot_yaml(){
-document.getElementById("stack-yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance".replace(/(\n)+/g, '<br />');
+document.getElementById("stack_yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance".replace(/(\n)+/g, '<br />');
 // Simple list
-    Sortable.create(simpleList, { /* options */ });
-	Sortable.create(stack-graphical, { /* options */ });
+    //Sortable.create(simpleList, { /* options */ });
+	Sortable.create(stack_graphical, { /* options */ });
 }
 
 function drop(ev) {
@@ -25,9 +30,10 @@ function drop(ev) {
     var nodeCopy = document.getElementById(data).cloneNode(true);
   nodeCopy.id = Math.random().toString(36).substring(7); /* We cannot use the same ID */
   nodeCopy.draggable = false;
+  nodeCopy.className += " move-cursor-style";
   ev.target.appendChild(nodeCopy);
 //alert('entered');
-document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n    type: OS\:\:Nova\:\:Server\n    properties\:\n      key_name\: my_key\n      image\: F18-x86_64-cfntools\n      flavor\: m1.small".replace(/(\n)+/g, '<br />');
+document.getElementById("stack_yaml").innerHTML+="resources\:\n  my_instance\:\n    type: OS\:\:Nova\:\:Server\n    properties\:\n      key_name\: my_key\n      image\: F18-x86_64-cfntools\n      flavor\: m1.small".replace(/(\n)+/g, '<br />');
 }
 	
 </script>
@@ -43,17 +49,20 @@ document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n
 <!-- Latest sortable library -->
 <script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
 
+<!-- My styles and scripts -->
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 
-<body onload="init_hot_yaml()" style ='background-color: #222222; padding: 0 0 0 0;'>
+<body onload="init_app()" style ='background-color: #222222; padding: 0 0 0 0;'>
 <nav class="navbar navbar-inverse" role="navigation"></nav>
 <div class="container-fluid" >
 	<div class="row" style="overflow: hidden; ">
 		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
 		<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Resources</h4></nav>
-			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" width="150"/>
-			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" width="150"/>
+			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" class="img-circle" width="150"/>
+			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" class="img-circle" width="150"/>
 			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" width="150"/>
 		</div>
 		<div class="col-md-6" style ='background-color: #222222;'>
@@ -68,7 +77,7 @@ document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n
 				</button></div> </h4>
 				
 				</nav>
-			<div class="pre-scrollable" id="stack-graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:50vh;">
+			<div class="pre-scrollable" id="stack_graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:50vh; background: url('http://i.stack.imgur.com/GySvQ.png')">
 				
 			
 			</div>
@@ -78,7 +87,7 @@ document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n
 			<h4>
 					YAML Template
 				</h4></nav>
-			<div class="pre-scrollable" id="stack-yaml" style ='color: #cccccc'>
+			<div class="pre-scrollable" id="stack_yaml" style ='color: #cccccc'>
 				
 			</div>
 			

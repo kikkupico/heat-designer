@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function init_hot_yaml(){
+document.getElementById("stack-yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance"
+}
+function drop(ev) {
+//alert('entered');
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+document.getElementById("stack-yaml").innerHTML+="\nresources\: \n my_instance\:\n    type\: OS\:\:Nova\:\:Server  \n  properties\:\  \n    key_name\: my_key \n     image\: ubuntu-trusty-x86_64 \n     flavor\: m1.small"
+}
+</script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</head>
+
+
+<body onload="init_hot_yaml()">
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3">
+			<img alt="compute" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" /><img alt="storage" src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" /><img alt="network" src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" />
+		</div>
+		<div class="col-md-6">
+			<div id="stack-graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:70%">
+			<h2>
+				Your Stack
+			</h2>
+			</div>
+			<div id="stack-yaml">
+			<h2>
+				YAML Template
+			</h2>
+			
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="btn-group">
+				 
+				<button class="btn btn-default" type="button">
+					Describe
+				</button> 
+				<button class="btn btn-default" type="button">
+					Deploy
+				</button> 
+				<button class="btn btn-default" type="button">
+					Monitor
+				</button> 
+
+			</div>
+			<h2>
+				Console
+			</h2>
+			<p>
+				ram:~/workspace $ 
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+	</div>
+</div>
+</body>
+</html>

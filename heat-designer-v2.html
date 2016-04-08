@@ -12,6 +12,9 @@ function drag(ev) {
 
 function init_hot_yaml(){
 document.getElementById("stack-yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance".replace(/(\n)+/g, '<br />');
+// Simple list
+    Sortable.create(simpleList, { /* options */ });
+	Sortable.create(stack-graphical, { /* options */ });
 }
 
 function drop(ev) {
@@ -21,11 +24,12 @@ function drop(ev) {
 	//alert('entered');
     var nodeCopy = document.getElementById(data).cloneNode(true);
   nodeCopy.id = Math.random().toString(36).substring(7); /* We cannot use the same ID */
+  nodeCopy.draggable = false;
   ev.target.appendChild(nodeCopy);
 //alert('entered');
 document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n    type: OS\:\:Nova\:\:Server\n    properties\:\n      key_name\: my_key\n      image\: F18-x86_64-cfntools\n      flavor\: m1.small".replace(/(\n)+/g, '<br />');
 }
-
+	
 </script>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -36,14 +40,17 @@ document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+<!-- Latest sortable library -->
+<script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
+
 </head>
 
 
 <body onload="init_hot_yaml()" style ='background-color: #222222; padding: 0 0 0 0;'>
 <nav class="navbar navbar-inverse" role="navigation"></nav>
 <div class="container-fluid" >
-	<div class="row" >
-		<div class="col-md-3" style ='background-color: #444444;'>
+	<div class="row" style="overflow: hidden; ">
+		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
 		<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Resources</h4></nav>
 			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" width="150"/>
 			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" width="150"/>
@@ -80,7 +87,7 @@ document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n
 			
 		</div>
 			
-		<div class="col-md-3" style ='background-color: #444444;'>
+		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;''>
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
 			<h4>
 				Console <button class="btn btn-default btn pull-right" type="button">

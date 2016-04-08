@@ -11,7 +11,7 @@ function drag(ev) {
 }
 
 function init_hot_yaml(){
-document.getElementById("stack-yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance"
+document.getElementById("stack-yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance".replace(/(\n)+/g, '<br />');
 }
 
 function drop(ev) {
@@ -23,7 +23,7 @@ function drop(ev) {
   nodeCopy.id = Math.random().toString(36).substring(7); /* We cannot use the same ID */
   ev.target.appendChild(nodeCopy);
 //alert('entered');
-document.getElementById("stack-yaml").innerHTML+="works";
+document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n    type: OS\:\:Nova\:\:Server\n    properties\:\n      key_name\: my_key\n      image\: F18-x86_64-cfntools\n      flavor\: m1.small".replace(/(\n)+/g, '<br />');
 }
 
 </script>
@@ -44,21 +44,29 @@ document.getElementById("stack-yaml").innerHTML+="works";
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-3">
-			<img alt="compute" id="node-icon" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" /><img alt="storage" src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" /><img alt="network" src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" />
+			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" />
+			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" />
+			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" />
 		</div>
 		<div class="col-md-6">
-			<div id="stack-graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:70%">
-			<h2>
-				Your Stack
-			</h2>
-			</div>
-			<div id="stack-yaml">
-			<h2>
-				YAML Template
-			</h2>
 			
+			<div  id="stack-graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:70%">
+				<h2>
+					Your Stack
+				</h2>
+				<hr>
 			</div>
+	
+			<div id="stack-yaml">
+				<h2>
+					YAML Template
+				</h2>
+			<hr>
+			</div>
+			
+			
 		</div>
+			
 		<div class="col-md-3">
 			<div class="btn-group">
 				 

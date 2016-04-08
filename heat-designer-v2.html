@@ -39,52 +39,56 @@ document.getElementById("stack-yaml").innerHTML+="resources\:\n  my_instance\:\n
 </head>
 
 
-<body onload="init_hot_yaml()">
-
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-3">
-			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" />
-			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" />
-			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" />
+<body onload="init_hot_yaml()" style ='background-color: #222222; padding: 0 0 0 0;'>
+<nav class="navbar navbar-inverse" role="navigation"></nav>
+<div class="container-fluid" >
+	<div class="row" >
+		<div class="col-md-3" style ='background-color: #444444;'>
+		<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Resources</h4></nav>
+			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" width="150"/>
+			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" width="150"/>
+			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" width="150"/>
 		</div>
-		<div class="col-md-6">
-			
-			<div  id="stack-graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:70%">
-				<h2>
-					Your Stack
-				</h2>
-				<hr>
-			</div>
-	
-			<div id="stack-yaml">
-				<h2>
-					YAML Template
-				</h2>
-			<hr>
-			</div>
-			
-			
-		</div>
-			
-		<div class="col-md-3">
-			<div class="btn-group">
+		<div class="col-md-6" style ='background-color: #222222;'>
+			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
+					<h4>Your Stack <div class="btn-group btn pull-right">
 				 
 				<button class="btn btn-default" type="button">
 					Describe
 				</button> 
 				<button class="btn btn-default" type="button">
+					Monitor
+				</button></div> </h4>
+				
+				</nav>
+			<div class="pre-scrollable" id="stack-graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:50vh;">
+				
+			
+			</div>
+	
+			
+			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
+			<h4>
+					YAML Template
+				</h4></nav>
+			<div class="pre-scrollable" id="stack-yaml" style ='color: #cccccc'>
+				
+			</div>
+			
+			
+			
+			
+		</div>
+			
+		<div class="col-md-3" style ='background-color: #444444;'>
+			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
+			<h4>
+				Console <button class="btn btn-default btn pull-right" type="button">
 					Deploy
 				</button> 
-				<button class="btn btn-default" type="button">
-					Monitor
-				</button> 
-
-			</div>
-			<h2>
-				Console
-			</h2>
-			<p>
+			</h4>
+			</nav>				
+			<p style ='color: #cccccc'>
 				ram:~/workspace $ 
 			</p>
 			<p>

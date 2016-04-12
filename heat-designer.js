@@ -12,6 +12,12 @@ var bindPopOvers = function(){
 
 $(document).ready( function(){
 bindPopOvers();
+$(document).on("click", "a.delete_button" , function() {
+			popOverId = $(this).parent().parent().attr("id");
+			//alert(popOverId);
+			$('[aria-describedby="'+popOverId+'"]').remove();
+            $(this).parent().parent().remove();
+        });
 }
 );
 
@@ -206,7 +212,7 @@ function drop(ev) {
   nodeCopy.draggable = false;
   nodeCopy.className += " move-cursor-style";
   nodeCopy.setAttribute("data-toggle","popover"); 
-  nodeCopy.setAttribute("data-container","body");
+  nodeCopy.setAttribute("data-container","#stack_graphical");
   ev.target.appendChild(nodeCopy);
   bindPopOvers();
 //alert('entered');

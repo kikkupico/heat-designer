@@ -1,53 +1,26 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<script>
-function allowDrop(ev) {
-    ev.preventDefault();
-}
+<!-- heat-designer scripts -->
+<script src="heat-designer.js"></script>
 
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function init_app(){
-	init_hot_yaml();
-	//init_draggable();
-	}
-
-function init_hot_yaml(){
-document.getElementById("stack_yaml").innerHTML+="heat_template_version\: 2015-04-30\ndescription\: Simple template to deploy a single compute instance".replace(/(\n)+/g, '<br />');
-// Simple list
-    //Sortable.create(simpleList, { /* options */ });
-	Sortable.create(stack_graphical, { /* options */ });
-}
-
-function drop(ev) {
-//alert('entered');
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-	//alert('entered');
-    var nodeCopy = document.getElementById(data).cloneNode(true);
-  nodeCopy.id = Math.random().toString(36).substring(7); /* We cannot use the same ID */
-  nodeCopy.draggable = false;
-  nodeCopy.className += " move-cursor-style";
-  ev.target.appendChild(nodeCopy);
-//alert('entered');
-document.getElementById("stack_yaml").innerHTML+="resources\:\n  my_instance\:\n    type: OS\:\:Nova\:\:Server\n    properties\:\n      key_name\: my_key\n      image\: F18-x86_64-cfntools\n      flavor\: m1.small".replace(/(\n)+/g, '<br />');
-}
-	
-</script>
-<!-- Latest compiled and minified CSS -->
+<!-- Latest compiled and minified bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-<!-- Latest compiled and minified JavaScript -->
+<!-- Latest compiled and minified jqeury -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<!-- Latest compiled and minified bootstrap js -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 <!-- Latest sortable library -->
 <script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
+
+<!-- downloaded yaml library -->
+<script src="yaml.js"></script>
 
 <!-- My styles and scripts -->
 <link rel="stylesheet" href="style.css">
@@ -87,9 +60,9 @@ document.getElementById("stack_yaml").innerHTML+="resources\:\n  my_instance\:\n
 			<h4>
 					YAML Template
 				</h4></nav>
-			<div class="pre-scrollable" id="stack_yaml" style ='color: #cccccc'>
+			<textarea disabled class="form-control" style="min-width: 100%; height: 100%;" id="stack_yaml" style ='color: #cccccc'>
 				
-			</div>
+			</textarea>
 			
 			
 			

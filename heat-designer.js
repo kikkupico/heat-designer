@@ -212,6 +212,8 @@ function drop(ev) {
   nodeCopy.draggable = false;
   nodeCopy.className += " move-cursor-style";
   nodeCopy.setAttribute("data-toggle","popover"); 
+  nodeCopy.setAttribute("data-trigger","focus");
+  nodeCopy.setAttribute("tabindex",0);  
   nodeCopy.setAttribute("data-container","#stack_graphical");
   ev.target.appendChild(nodeCopy);
   bindPopOvers();

@@ -1,3 +1,20 @@
+//for popover menu
+var bindPopOvers = function(){
+    $('[data-toggle="popover"]').popover(
+	{
+    html: true, 
+	content: function() {
+          return $('#popover-content').html();
+        }
+}
+); 
+}
+
+$(document).ready( function(){
+bindPopOvers();
+}
+);
+
 var stack_json = {
     "heat_template_version": "2015-04-30T00:00:00.000Z",
     "description": "Simple template to deploy a single compute instance",
@@ -188,7 +205,10 @@ function drop(ev) {
   nodeCopy.id = Math.random().toString(36).substring(7); /* We cannot use the same ID */
   nodeCopy.draggable = false;
   nodeCopy.className += " move-cursor-style";
+  nodeCopy.setAttribute("data-toggle","popover"); 
+  nodeCopy.setAttribute("data-container","body");
   ev.target.appendChild(nodeCopy);
+  bindPopOvers();
 //alert('entered');
 document.getElementById("stack_yaml").innerHTML+="resources\:\n  my_instance\:\n    type: OS\:\:Nova\:\:Server\n    properties\:\n      key_name\: my_key\n      image\: F18-x86_64-cfntools\n      flavor\: m1.small".replace(/(\n)+/g, '<br />');
 }

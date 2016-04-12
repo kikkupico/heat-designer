@@ -1,8 +1,6 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<!-- heat-designer scripts -->
-<script src="heat-designer.js"></script>
 
 <!-- Latest compiled and minified bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -25,6 +23,9 @@
 <!-- My styles and scripts -->
 <link rel="stylesheet" href="style.css">
 
+<!-- heat-designer scripts -->
+<script src="heat-designer.js"></script>
+
 </head>
 
 
@@ -34,8 +35,8 @@
 	<div class="row" style="overflow: hidden; ">
 		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
 		<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Resources</h4></nav>
-			<img alt="compute" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" class="img-circle" width="150"/>
-			<img alt="storage" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" class="img-circle" width="150"/>
+			<img alt="compute" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" class="img-circle" width="150"/>
+			<img alt="storage" type="button" data-html="true" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" class="img-circle" width="150"/>
 			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" width="150"/>
 		</div>
 		<div class="col-md-6" style ='background-color: #222222;'>
@@ -86,5 +87,12 @@
 		</div>
 	</div>
 </div>
+<div id="popover-content" class="hide">
+<ul class="list-group">
+<li class="list-group-item">Delete</li>
+<li class="list-group-item">Edit Parameters</li>
+</ul>
+</div>
+	
 </body>
 </html>

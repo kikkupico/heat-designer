@@ -1,0 +1,202 @@
+<html>
+<head>
+<script>
+
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+function getIndentString(node,source) {
+	pos = source.indexOf(node);
+	//alert("Position in Indent Level funtion" + pos);
+		
+	//logic for zero indent level
+	if (pos ==0) {
+		return '';
+		}
+	if(source[pos-1] == '\n')
+	{
+		return '';
+		}
+		
+	i=1;
+	indent_string = "";
+	while(source[pos-i] != '\n')
+	{
+		//alert(source[pos-i]);
+		if (source[pos-i] != ' ') {
+			return -1;
+		}
+		i=i+1;
+		indent_string=indent_string+" ";
+	}
+	return indent_string;
+}
+
+function getIndentLevel(node,source) {
+	pos = source.indexOf(node);
+	//alert("Position in Indent Level funtion" + pos);
+		
+	//logic for zero indent level
+	if (pos ==0) {
+		return 0;
+		}
+	if(source[pos-1] == '\n')
+	{
+		return 0;
+		}
+		
+	i=1;
+	indent_string = "";
+	while(source[pos-i] != '\n')
+	{
+		//alert(source[pos-i]);
+		if (source[pos-i] != ' ') {
+			return -1;
+		}
+		i=i+1;
+	}
+	return i-1;
+}
+
+function getIndentLevel_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	//alert(">" + getIndentLevel(node, source) + "<");
+}
+
+function getYAMLNodeEndRegEx(indent_level)
+{
+	return new RegExp('\n {0,'+indent_level+'}(?! )');
+}
+function getNextNode(node, source) {
+	node_start = source.indexOf(node);
+	indent_level = getIndentLevel(node, source);
+	
+	re = getYAMLNodeEndRegEx(indent_level);
+	//alert('node start in get node function'  + node_start);
+	next_node = node_start+source.substring(node_start).search(re)+indent_string.length+1;
+	//alert(node_end);
+	return next_node;
+}
+
+function getNodeEnd(node, source) {
+	node_start = source.indexOf(node);
+	indent_level = getIndentLevel(node, source);
+	
+	re = getYAMLNodeEndRegEx(indent_level);
+	//alert('node start in get node function'  + node_start);
+	node_end = node_start+source.substring(node_start).search(re)+1;
+	//alert(node_end);
+	return node_end;
+}
+
+function getNextNode_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	node_end = getNextNode(node, source);
+	//alert("Node end position" + node_end);
+	alert(source.substring(node_end, node_end+source.substring(node_end).indexOf(':')));
+}
+
+function extractNode(node, source) {
+	node_start = source.indexOf(node);
+	node_end = getNodeEnd(node, source);
+	return source.substring(node_start,node_end+1);
+}
+
+function extractNode_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	alert(extractNode(node, source));
+}
+
+function removeNode()
+{
+ node = document.getElementById("node").value;
+ //regex_pattern = "/"+node+"/g";
+ //alert(regex_pattern);
+ //var r = new RegExp(regex_pattern);
+ new_content = replaceAll(document.getElementById("stack-yaml").value,node,'');
+ document.getElementById("stack-yaml").value = new_content;
+ }
+ </script>
+ </head>
+<body>
+<textarea id="stack-yaml" rows="30" cols="100">#
+# This is a hello world HOT template just defining a single compute
+# server.
+#
+heat_template_version: 2013-05-23
+
+description: >
+  Hello world HOT template that just defines a single server.
+  Contains just base features to verify base HOT support.
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing key pair to use for the server
+    constraints:
+      - custom_constraint: nova.keypair
+  flavor:
+    type: string
+    description: Flavor for the server to be created
+    default: m1.small
+    constraints:
+      - custom_constraint: nova.flavor
+  image:
+    type: string
+    description: Image ID or image name to use for the server
+    constraints:
+      - custom_constraint: glance.image
+  admin_pass:
+    type: string
+    description: Admin password
+    hidden: true
+    constraints:
+      - length: { min: 6, max: 8 }
+        description: Password length must be between 6 and 8 characters
+      - allowed_pattern: "[a-zA-Z0-9]+"
+        description: Password must consist of characters and numbers only
+      - allowed_pattern: "[A-Z]+[a-zA-Z0-9]*"
+        description: Password must start with an uppercase character
+  db_port:
+    type: number
+    description: Database port number
+    default: 50000
+    constraints:
+      - range: { min: 40000, max: 60000 }
+        description: Port number must be between 40000 and 60000
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      admin_pass: { get_param: admin_pass }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            echo db_port
+          params:
+            db_port: { get_param: db_port }
+
+outputs:
+  server_networks:
+    description: The networks of the deployed server
+    value: { get_attr: [server, networks] }</textarea>
+<br><br>
+<input id="node"></input>
+<input value="Remove" type="button" onclick="removeNode()"></input>
+<input value="Indent Level" type="button" onclick="getIndentLevel_UI()"></input>
+<input value="Next Node" type="button" onclick="getNextNode_UI()"></input>
+<input value="Extract Node" type="button" onclick="extractNode_UI()"></input>
+</body>
+</html>

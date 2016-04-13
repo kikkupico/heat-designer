@@ -11,8 +11,16 @@ function replaceAll(str, find, replace) {
 }
 
 function getNodeStart(node, source) {
-	return source.indexOf(node+":")-getIndentLevel(node,source);
+	node_start = source.indexOf(node+":")-getIndentLevel(node,source);
+	if (node_start == -1)
+	{
+		throw "ERROR:Node not Found!";
 	}
+	else
+	{
+		return node_start;
+		}
+}
 
 function getIndentString(node,source) {
 	pos = getNodeStart(node, source);
@@ -44,6 +52,11 @@ function getIndentString(node,source) {
 function getIndentLevel(node,source) {
 	pos = source.indexOf(node+":"); //not using getNodeStart because getNodeStart requires getIndentLevel
 	//alert("Position in Indent Level funtion" + pos);
+	
+	if (pos == -1)
+	{
+		throw "ERROR:Node not Found!";
+	}
 		
 	//logic for zero indent level
 	if (pos ==0) {
@@ -94,6 +107,7 @@ function getNodeEnd(node, source) {
 	
 	re = getYAMLNodeEndRegEx(indent_level);
 	//alert('node start in get node function'  + node_start);
+	
 	node_end = node_start+source.substring(node_start).search(re);
 	//alert(node_end);
 	
@@ -141,10 +155,17 @@ function removeNode_UI() {
 	document.getElementById("stack-yaml").value = edited_source;
 }
 
+function copyNode_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	node_content = extractNode(node, source);
+	document.getElementById("new-stack").value += node_content;
+}
+
  </script>
  </head>
 <body>
-<textarea id="stack-yaml" rows="30" cols="100">#
+<textarea id="stack-yaml" rows="30" cols="80">#
 # This is a hello world HOT template just defining a single compute
 # server.
 #
@@ -209,11 +230,13 @@ outputs:
   server_networks:
     description: The networks of the deployed server
     value: { get_attr: [server, networks] }</textarea>
+<textarea id="new-stack" rows="30" cols="70"></textarea>
 <br><br>
 <input id="node"></input>
 <input value="Remove Node" type="button" onclick="removeNode_UI()"></input>
 <input value="Indent Level" type="button" onclick="getIndentLevel_UI()"></input>
 <input value="Next Node" type="button" onclick="getNextNode_UI()"></input>
 <input value="Extract Node" type="button" onclick="extractNode_UI()"></input>
+<input value="Copy Node" type="button" onclick="copyNode_UI()"></input>
 </body>
 </html>

@@ -10,8 +10,12 @@ function replaceAll(str, find, replace) {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
+function getNodeStart(node, source) {
+	return source.indexOf(node+":")-getIndentLevel(node,source);
+	}
+
 function getIndentString(node,source) {
-	pos = source.indexOf(node);
+	pos = getNodeStart(node, source);
 	//alert("Position in Indent Level funtion" + pos);
 		
 	//logic for zero indent level
@@ -38,7 +42,7 @@ function getIndentString(node,source) {
 }
 
 function getIndentLevel(node,source) {
-	pos = source.indexOf(node);
+	pos = source.indexOf(node+":"); //not using getNodeStart because getNodeStart requires getIndentLevel
 	//alert("Position in Indent Level funtion" + pos);
 		
 	//logic for zero indent level
@@ -66,7 +70,7 @@ function getIndentLevel(node,source) {
 function getIndentLevel_UI() {
 	node = document.getElementById("node").value;
 	source = document.getElementById("stack-yaml").value;
-	//alert(">" + getIndentLevel(node, source) + "<");
+	alert(getIndentLevel(node, source));
 }
 
 function getYAMLNodeEndRegEx(indent_level)
@@ -74,24 +78,31 @@ function getYAMLNodeEndRegEx(indent_level)
 	return new RegExp('\n {0,'+indent_level+'}(?! )');
 }
 function getNextNode(node, source) {
-	node_start = source.indexOf(node);
+	node_start = getNodeStart(node, source);
 	indent_level = getIndentLevel(node, source);
 	
 	re = getYAMLNodeEndRegEx(indent_level);
 	//alert('node start in get node function'  + node_start);
-	next_node = node_start+source.substring(node_start).search(re)+indent_string.length+1;
+	next_node = node_start+source.substring(node_start).search(re)+indent_level+1;
 	//alert(node_end);
 	return next_node;
 }
 
 function getNodeEnd(node, source) {
-	node_start = source.indexOf(node);
+	node_start = getNodeStart(node, source);
 	indent_level = getIndentLevel(node, source);
 	
 	re = getYAMLNodeEndRegEx(indent_level);
 	//alert('node start in get node function'  + node_start);
-	node_end = node_start+source.substring(node_start).search(re)+1;
+	node_end = node_start+source.substring(node_start).search(re);
 	//alert(node_end);
+	
+	//handle last node case - this part requires better code and possibly refacting of the whole function
+	if(node_end+1 == node_start)
+	{
+		node_end = source.length-1;
+	}
+	
 	return node_end;
 }
 
@@ -104,7 +115,7 @@ function getNextNode_UI() {
 }
 
 function extractNode(node, source) {
-	node_start = source.indexOf(node);
+	node_start = getNodeStart(node, source);
 	node_end = getNodeEnd(node, source);
 	return source.substring(node_start,node_end+1);
 }
@@ -115,15 +126,21 @@ function extractNode_UI() {
 	alert(extractNode(node, source));
 }
 
-function removeNode()
-{
- node = document.getElementById("node").value;
- //regex_pattern = "/"+node+"/g";
- //alert(regex_pattern);
- //var r = new RegExp(regex_pattern);
- new_content = replaceAll(document.getElementById("stack-yaml").value,node,'');
- document.getElementById("stack-yaml").value = new_content;
- }
+function removeNode(node, source)
+{	
+	node_start = getNodeStart(node, source);
+	node_end = getNodeEnd(node, source);
+	
+	return source.substring(0,node_start)+source.substring(node_end+1);
+}
+
+function removeNode_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	edited_source = removeNode(node, source);
+	document.getElementById("stack-yaml").value = edited_source;
+}
+
  </script>
  </head>
 <body>
@@ -194,7 +211,7 @@ outputs:
     value: { get_attr: [server, networks] }</textarea>
 <br><br>
 <input id="node"></input>
-<input value="Remove" type="button" onclick="removeNode()"></input>
+<input value="Remove Node" type="button" onclick="removeNode_UI()"></input>
 <input value="Indent Level" type="button" onclick="getIndentLevel_UI()"></input>
 <input value="Next Node" type="button" onclick="getNextNode_UI()"></input>
 <input value="Extract Node" type="button" onclick="extractNode_UI()"></input>

@@ -17,27 +17,90 @@
 <!-- Latest sortable library -->
 <script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
 
-<!-- downloaded yaml library -->
-<script src="yaml.js"></script>
-
 <!-- My styles and scripts -->
 <link rel="stylesheet" href="style.css">
 
 <!-- heat-designer scripts -->
+<script src="yaml.js"></script>
 <script src="heat-designer.js"></script>
 
 </head>
 
 
 <body onload="init_app()" style ='background-color: #222222; padding: 0 0 0 0;'>
+<textarea style="display:none;" id="sample_yaml">#
+# This is a hello world HOT template just defining a single compute
+# server.
+#
+heat_template_version: 2013-05-23
+
+description: >
+  Hello world HOT template that just defines a single server.
+  Contains just base features to verify base HOT support.
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing key pair to use for the server
+    constraints:
+      - custom_constraint: nova.keypair
+  flavor:
+    type: string
+    description: Flavor for the server to be created
+    default: m1.small
+    constraints:
+      - custom_constraint: nova.flavor
+  image:
+    type: string
+    description: Image ID or image name to use for the server
+    constraints:
+      - custom_constraint: glance.image
+  admin_pass:
+    type: string
+    description: Admin password
+    hidden: true
+    constraints:
+      - length: { min: 6, max: 8 }
+        description: Password length must be between 6 and 8 characters
+      - allowed_pattern: "[a-zA-Z0-9]+"
+        description: Password must consist of characters and numbers only
+      - allowed_pattern: "[A-Z]+[a-zA-Z0-9]*"
+        description: Password must start with an uppercase character
+  db_port:
+    type: number
+    description: Database port number
+    default: 50000
+    constraints:
+      - range: { min: 40000, max: 60000 }
+        description: Port number must be between 40000 and 60000
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      admin_pass: { get_param: admin_pass }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            echo db_port
+          params:
+            db_port: { get_param: db_port }
+
+outputs:
+  server_networks:
+    description: The networks of the deployed server
+    value: { get_attr: [server, networks] }</textarea>
 <nav class="navbar navbar-inverse" role="navigation"></nav>
 <div class="container-fluid" >
 	<div class="row" style="overflow: hidden; ">
 		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
 		<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Resources</h4></nav>
-			<img alt="compute" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)" src="http://www.lifeimage.com/wp-content/uploads/spot-circle-laptop.png" class="img-circle" width="150"/>
-			<img alt="storage" type="button" data-html="true" id="icon-storage" draggable="true" ondragstart="drag(event)"src="https://cdn2.iconfinder.com/data/icons/circular-icon-set/256/HardDrive.png" class="img-circle" width="150"/>
-			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="http://icons.iconarchive.com/icons/graphicloads/100-flat/256/browser-icon.png" class="img-circle" width="150"/>
+			<img alt="compute" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)" src="images/spot-circle-laptop.png" class="img-circle" width="150"/>
+			<img alt="storage" type="button" data-html="true" id="icon-storage" draggable="true" ondragstart="drag(event)"src="images/HardDrive.png" class="img-circle" width="150"/>
+			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="images/browser-icon.png" class="img-circle" width="150"/>
 		</div>
 		<div class="col-md-6" style ='background-color: #222222;'>
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
@@ -91,6 +154,5 @@
   <a href="#" class="list-group-item list-group-item-danger delete_button">Delete</a>
   <a href="#" class="list-group-item">Edit Parameters</a>
 </div>
-	
 </body>
 </html>

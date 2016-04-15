@@ -35,7 +35,7 @@ function getIndentString(node,source) {
 		return '';
 		}
 		
-	i=1;
+	var i=1;
 	indent_string = "";
 	while(source[pos-i] != '\n')
 	{
@@ -67,7 +67,7 @@ function getIndentLevel(node,source) {
 		return 0;
 		}
 		
-	i=1;
+	var i=1;
 	indent_string = "";
 	while(source[pos-i] != '\n')
 	{
@@ -162,6 +162,43 @@ function copyNode_UI() {
 	document.getElementById("new-stack").value += node_content;
 }
 
+function getChildren(node, source) {
+	node_contents = extractNode(node, source);
+	child_indent_level = getIndentLevel(node, source)+2;
+	match_regex_pattern = "\n {"+child_indent_level+","+child_indent_level+"}(?! ).*(?=:)";
+	//alert(regex_pattern);
+	//alert(node_contents);
+	match_regex = new RegExp(match_regex_pattern,"g");
+	children = node_contents.match(match_regex);
+	
+	//removing preceding characters because JS doesn't support look behind
+	strip_regex_pattern = "\n {"+child_indent_level+","+child_indent_level+"}(?! )";
+	strip_regex = new RegExp(strip_regex_pattern,"g");
+	
+	var i;
+	
+	for(i=0;i<children.length;i++)
+	{
+		children[i] = children[i].replace(strip_regex,"");
+	}
+	return children;
+}
+
+function getChildren_UI()
+{
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	children = getChildren(node,source);
+	alert(children);
+	alert(children.length);
+	var j;
+	
+	for(j=0;j<children.length;j++){
+		alert(j+".>"+children[j]+"<");
+		alert(extractNode(children[j], extractNode(node,source)));
+	}
+}
+
  </script>
  </head>
 <body>
@@ -238,5 +275,6 @@ outputs:
 <input value="Next Node" type="button" onclick="getNextNode_UI()"></input>
 <input value="Extract Node" type="button" onclick="extractNode_UI()"></input>
 <input value="Copy Node" type="button" onclick="copyNode_UI()"></input>
+<input value="Get Children" type="button" onclick="getChildren_UI()"></input>
 </body>
 </html>

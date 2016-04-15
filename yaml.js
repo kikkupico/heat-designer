@@ -158,3 +158,25 @@ function copyNode_UI() {
 	node_content = extractNode(node, source);
 	document.getElementById("new-stack").value += node_content;
 }
+
+function getChildren(node, source) {
+	node_contents = extractNode(node, source);
+	child_indent_level = getIndentLevel(node, source)+2;
+	match_regex_pattern = "\n {"+child_indent_level+","+child_indent_level+"}(?! ).*(?=:)";
+	//alert(regex_pattern);
+	//alert(node_contents);
+	match_regex = new RegExp(match_regex_pattern,"g");
+	children = node_contents.match(match_regex);
+	
+	//removing preceding characters because JS doesn't support look behind
+	strip_regex_pattern = "\n {"+child_indent_level+","+child_indent_level+"}(?! )";
+	strip_regex = new RegExp(strip_regex_pattern,"g");
+	
+	var i;
+	
+	for(i=0;i<children.length;i++)
+	{
+		children[i] = children[i].replace(strip_regex,"");
+	}
+	return children;
+}

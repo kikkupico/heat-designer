@@ -19,6 +19,7 @@
 
 <!-- My styles and scripts -->
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="resource-icon.css">
 
 <!-- heat-designer scripts -->
 <script src="yaml.js"></script>
@@ -74,6 +75,16 @@ parameters:
         description: Port number must be between 40000 and 60000
 
 resources:
+  private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: private_net_name }
+  cinder_volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: volume_size }
+      availability_zone: { get_param: availability_zone }
+      volume_type: { get_resource: cinder_encryption_vol_type }
   server:
     type: OS::Nova::Server
     properties:
@@ -97,10 +108,45 @@ outputs:
 <div class="container-fluid" >
 	<div class="row" style="overflow: hidden; ">
 		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
-		<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Resources</h4></nav>
-			<img alt="compute" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)" src="images/spot-circle-laptop.png" class="img-circle" width="150"/>
-			<img alt="storage" type="button" data-html="true" id="icon-storage" draggable="true" ondragstart="drag(event)"src="images/HardDrive.png" class="img-circle" width="150"/>
-			<img alt="network" id="icon-network" draggable="true" ondragstart="drag(event)"src="images/browser-icon.png" class="img-circle" width="150"/>
+			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'> <h4>Toolbox</h4></nav>
+			<div class="panel-group" id="accordion">
+			  <div class="panel panel-default">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+					Parameters</a>
+				  </h4>
+				</div>
+				<div id="collapse1" class="panel-collapse collapse">
+				  <div class="panel-body">-no parameters available-</div>
+				</div>
+			  </div>
+			  <div class="panel panel-default">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+					Resources</a>
+				  </h4>
+				</div>
+				<div id="collapse2" class="panel-collapse collapse in">
+				  <div id="resource-tools" class="panel-body">
+								
+				</div>
+				</div>
+			  </div>
+			  <div class="panel panel-default">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+					Outputs</a>
+				  </h4>
+				</div>
+				<div id="collapse3" class="panel-collapse collapse">
+				  <div class="panel-body">-no outputs available-</div>
+				</div>
+			  </div>
+			</div>
+
 		</div>
 		<div class="col-md-6" style ='background-color: #222222;'>
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
@@ -114,45 +160,30 @@ outputs:
 				</button></div> </h4>
 				
 				</nav>
-			<div class="pre-scrollable" id="stack_graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:50vh; background: url('http://i.stack.imgur.com/GySvQ.png')">
+			<div class="pre-scrollable" id="stack_graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:80vh; background: url('http://i.stack.imgur.com/GySvQ.png')">
 				
 			
 			</div>
-	
-			
-			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
-			<h4>
-					YAML Template
-				</h4></nav>
-			<textarea disabled class="form-control" style="min-width: 100%; height: 100%;" id="stack_yaml" style ='color: #cccccc'>
-				
-			</textarea>
-			
-			
-			
 			
 		</div>
 			
 		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;''>
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
 			<h4>
-				Console <button class="btn btn-default btn pull-right" type="button">
-					Deploy
-				</button> 
-			</h4>
-			</nav>				
-			<p style ='color: #cccccc'>
-				ram:~/workspace $ 
-			</p>
-			<p>
-				<a class="btn" href="#">View details »</a>
-			</p>
+					YAML Template
+				</h4></nav>
+			<textarea disabled class="form-control" rows="20" style="min-width: 100%; height: 100%;" id="stack_yaml" style ='color: #cccccc'>
+				
+			</textarea>
 		</div>
 	</div>
 </div>
 <div id="popover-content" class="hide list-group">
   <a href="#" class="list-group-item list-group-item-danger delete_button">Delete</a>
-  <a href="#" class="list-group-item">Edit Parameters</a>
+  <a href="#" class="list-group-item">Edit Properties</a>
+</div>
+<div id="resource-icon-sample" class="hide column" resource-type="volume" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)">
+<header></header>
 </div>
 </body>
 </html>

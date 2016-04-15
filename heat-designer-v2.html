@@ -180,10 +180,30 @@ outputs:
 </div>
 <div id="popover-content" class="hide list-group">
   <a href="#" class="list-group-item list-group-item-danger delete_button">Delete</a>
-  <a href="#" class="list-group-item">Edit Properties</a>
+  <a href="#" class="list-group-item edit_properties_button" data-toggle="modal" data-target="#edit_properties">Edit Properties</a>
 </div>
 <div id="resource-icon-sample" class="hide column" resource-type="volume" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)">
 <header></header>
 </div>
+<!-- Modal -->
+  <div class="modal fade" id="edit_properties" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">-node-</h4>
+        </div>
+        <div class="modal-body">
+          <textarea rows="10" cols="60">-properties-</textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 </body>
 </html>

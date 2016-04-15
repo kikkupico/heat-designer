@@ -23,7 +23,10 @@ for(i=0;i<resources.length;i++){
 	icon_html.className = icon_html.className.replace("hide","");
 	icon_html.id = resources[i];
 	icon_html.setAttribute("resource-type",resources[i]);
-	icon_html.getElementsByTagName("header")[0].innerHTML = resources[i];
+	node = extractNode(resources[i],sample_yaml);
+	resource_type_unformatted = extractNode("type",node);
+	resource_type = resource_type_unformatted.replace("type: OS::","").replace("::","<br>");
+	icon_html.getElementsByTagName("header")[0].innerHTML = resource_type;
 	//alert(resources[i]);
 	document.getElementById("resource-tools").innerHTML += icon_html.outerHTML;
 	}
@@ -42,6 +45,23 @@ $(document).on("click", "a.delete_button" , function() {
 			edited_yaml = removeNode(resource_type,doc_yaml);
 			document.getElementById("stack_yaml").value =  edited_yaml;
         });
+
+//edit properties button function
+$('#edit_properties').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  popOverId = button.parent().parent().attr("id");
+  //alert(popOverId);
+  var node_label = $('[aria-describedby="'+popOverId+'"]').attr("resource-type");
+ 
+  //alert(node);
+  var properties = extractNode("properties",extractNode(node_label, sample_yaml))
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('.modal-title').text(node_label)
+  modal.find('.modal-body textarea').text(properties)
+})
+
 }
 );
 

@@ -36,34 +36,54 @@ bindPopOvers();
 //delete button function
 $(document).on("click", "a.delete_button" , function() {
 			popOverId = $(this).parent().parent().attr("id");
-			resource_type = $('[aria-describedby="'+popOverId+'"]').attr("resource-type");
+			node_name = $('[aria-describedby="'+popOverId+'"]').attr("id");
 			//alert(popOverId);
 			//alert(resource_type);
 			$('[aria-describedby="'+popOverId+'"]').remove();
             $(this).parent().parent().remove();
 			doc_yaml = document.getElementById("stack_yaml").value;
-			edited_yaml = removeNode(resource_type,doc_yaml);
+			edited_yaml = removeNode(node_name,doc_yaml);
 			document.getElementById("stack_yaml").value =  edited_yaml;
         });
 
 //edit properties button function
 $('#edit_properties').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) // Button that triggered the modal
-  popOverId = button.parent().parent().attr("id");
+  var popOverId = button.parent().parent().attr("id");
   //alert(popOverId);
-  var node_label = $('[aria-describedby="'+popOverId+'"]').attr("resource-type");
+  var node_label = $('[aria-describedby="'+popOverId+'"]').attr("id");
  
-  //alert(node);
-  var properties = extractNode("properties",extractNode(node_label, sample_yaml))
+  //alert(node_label);
+  var stack_yaml = document.getElementById("stack_yaml").value;
+  var properties = extractNode("properties",extractNode(node_label, stack_yaml))
+  //alert(properties);
   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  var modal = $(this)
-  modal.find('.modal-title').text(node_label)
-  modal.find('.modal-body textarea').text(properties)
+  //var modal = document.getElementById("node_name_in_modal");
+  document.getElementById("node_name_in_modal").innerHTML = node_label;
+  document.getElementById("node_properties_editable").value = properties;
+  
+  //var modal = $(this);
+  //modal.find('.modal-title').text(node_label)
+  //modal.find('.modal-body textarea').text(properties)
 })
 
 }
+
 );
+
+
+function saveProperties() {
+	node_label = document.getElementById("node_name_in_modal").innerHTML;
+	//alert(node_label);
+	var stack_yaml = document.getElementById("stack_yaml").value;
+	
+	var oldProperties = extractNode("properties",extractNode(node_label, stack_yaml))
+	oldSource = document.getElementById("stack_yaml").value;
+	newProperties = document.getElementById("node_properties_editable").value;
+	document.getElementById("stack_yaml").value = setChild(node_label, oldSource, "properties", newProperties);
+}
+
 
 function allowDrop(ev) {
     ev.preventDefault();
@@ -106,5 +126,8 @@ function drop(ev) {
   ev.target.appendChild(nodeCopy);
   bindPopOvers();
 //alert('entered');
-document.getElementById("stack_yaml").value+=extractNode(resource_type,sample_yaml);
+	var node_sample = extractNode(resource_type,sample_yaml);
+	var node_content = node_sample.replace(resource_type+":", nodeCopy.id+":");
+	//alert(node_content);
+	document.getElementById("stack_yaml").value+=node_content;
 }

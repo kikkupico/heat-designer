@@ -167,7 +167,7 @@ outputs:
 			
 		</div>
 			
-		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;''>
+		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
 			<h4>
 					YAML Template
@@ -193,16 +193,16 @@ outputs:
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">-node-</h4>
+          <h4 id="node_name_in_modal" class="modal-title">-node-</h4>
         </div>
         <div class="modal-body">
-          <textarea rows="10" cols="60">-properties-</textarea>
+          <textarea id="node_properties_editable" rows="10" cols="60">-properties-</textarea>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<button type="button" onclick = "saveProperties()" class="btn btn-primary" data-dismiss="modal">Save</button>
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         </div>
       </div>
-      
     </div>
   </div>
 </body>

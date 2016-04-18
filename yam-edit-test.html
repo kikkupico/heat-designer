@@ -199,6 +199,55 @@ function getChildren_UI()
 	}
 }
 
+
+function replaceNode(node, source, new_node_content) { //note: this function will directly replace contents without checking correctness
+	node_content = extractNode(node, source);
+	return source.replace(node_content,new_node_content);
+	}
+	
+function replaceNode_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	new_node_content = document.getElementById("new-stack").value;
+	
+	document.getElementById("stack-yaml").value = replaceNode(node, source, new_node_content);;
+}
+
+
+function setChild(node, source, child, child_contents){ //NOTE:if child is not found, nothing is changed
+	node_contents = extractNode(node, source);
+	new_node_contents = replaceNode(child, node_contents, child_contents);
+	new_source = replaceNode(node, source, new_node_contents);
+	return new_source;
+}
+
+
+function setChild_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	child = document.getElementById("node2").value;
+	new_child_contents = document.getElementById("new-stack").value;
+	
+	document.getElementById("stack-yaml").value = setChild(node, source, child, new_child_contents);
+}
+
+
+function renameNode(node, source, new_name) { //not tested!
+	node_content = extractNode(node, source);
+	edited_node_content = node_content.replace(node+":", new_name+":");
+	return replaceNode(node, source, edited_node_content);
+}
+
+function renameNode_UI()
+{
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	new_name = document.getElementById("node2").value;
+	
+	document.getElementById("stack-yaml").value = renameNode(node, source, new_name);
+}
+	
+
  </script>
  </head>
 <body>
@@ -276,5 +325,10 @@ outputs:
 <input value="Extract Node" type="button" onclick="extractNode_UI()"></input>
 <input value="Copy Node" type="button" onclick="copyNode_UI()"></input>
 <input value="Get Children" type="button" onclick="getChildren_UI()"></input>
+<input value="Replace Node" type="button" onclick="replaceNode_UI()"></input>
+<br><br>
+<input id="node2"></input>
+<input value="Set Child" type="button" onclick="setChild_UI()"></input>
+<input value="Rename Node" type="button" onclick="renameNode_UI()"></input>
 </body>
 </html>

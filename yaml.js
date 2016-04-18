@@ -32,7 +32,7 @@ function getIndentString(node,source) {
 		return '';
 		}
 		
-	i=1;
+	var i=1;
 	indent_string = "";
 	while(source[pos-i] != '\n')
 	{
@@ -64,7 +64,7 @@ function getIndentLevel(node,source) {
 		return 0;
 		}
 		
-	i=1;
+	var i=1;
 	indent_string = "";
 	while(source[pos-i] != '\n')
 	{
@@ -79,7 +79,7 @@ function getIndentLevel(node,source) {
 
 function getIndentLevel_UI() {
 	node = document.getElementById("node").value;
-	source = document.getElementById("sample-yaml").value;
+	source = document.getElementById("stack-yaml").value;
 	alert(getIndentLevel(node, source));
 }
 
@@ -119,7 +119,7 @@ function getNodeEnd(node, source) {
 
 function getNextNode_UI() {
 	node = document.getElementById("node").value;
-	source = document.getElementById("sample-yaml").value;
+	source = document.getElementById("stack-yaml").value;
 	node_end = getNextNode(node, source);
 	//alert("Node end position" + node_end);
 	alert(source.substring(node_end, node_end+source.substring(node_end).indexOf(':')));
@@ -133,7 +133,7 @@ function extractNode(node, source) {
 
 function extractNode_UI() {
 	node = document.getElementById("node").value;
-	source = document.getElementById("sample-yaml").value;
+	source = document.getElementById("stack-yaml").value;
 	alert(extractNode(node, source));
 }
 
@@ -147,14 +147,14 @@ function removeNode(node, source)
 
 function removeNode_UI() {
 	node = document.getElementById("node").value;
-	source = document.getElementById("sample-yaml").value;
+	source = document.getElementById("stack-yaml").value;
 	edited_source = removeNode(node, source);
-	document.getElementById("sample-yaml").value = edited_source;
+	document.getElementById("stack-yaml").value = edited_source;
 }
 
 function copyNode_UI() {
 	node = document.getElementById("node").value;
-	source = document.getElementById("sample-yaml").value;
+	source = document.getElementById("stack-yaml").value;
 	node_content = extractNode(node, source);
 	document.getElementById("new-stack").value += node_content;
 }
@@ -180,3 +180,64 @@ function getChildren(node, source) {
 	}
 	return children;
 }
+
+function getChildren_UI()
+{
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	children = getChildren(node,source);
+	alert(children);
+	alert(children.length);
+	var j;
+	
+	for(j=0;j<children.length;j++){
+		alert(j+".>"+children[j]+"<");
+		alert(extractNode(children[j], extractNode(node,source)));
+	}
+}
+
+function replaceNode(node, source, new_node_content) { //note: this function will directly replace contents without checking correctness
+	node_content = extractNode(node, source);
+	return source.replace(node_content,new_node_content);
+	}
+
+function replaceNode_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	new_node_content = document.getElementById("new-stack").value;
+	
+	document.getElementById("stack-yaml").value = replaceNode(node, source, new_node_content);;
+}
+
+
+function setChild(node, source, child, child_contents){ //NOTE:if child is not found, nothing is changed
+	node_contents = extractNode(node, source);
+	new_node_contents = replaceNode(child, node_contents, child_contents);
+	new_source = replaceNode(node, source, new_node_contents);
+	return new_source;
+}
+
+function setChild_UI() {
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	child = document.getElementById("child").value;
+	new_child_contents = document.getElementById("new-stack").value;
+	
+	document.getElementById("stack-yaml").value = setChild(node, source, child, new_child_contents);
+}
+
+function renameNode(node, source, new_name) {
+	node_content = extractNode(node, source);
+	edited_node_content = node_content.replace(node+":", new_name+":");
+	return replaceNode(node, source, edited_node_content);
+}
+
+function renameNode_UI()
+{
+	node = document.getElementById("node").value;
+	source = document.getElementById("stack-yaml").value;
+	new_name = document.getElementById("node2").value;
+	
+	document.getElementById("stack-yaml").value = renameNode(node, source, new_name);
+}
+

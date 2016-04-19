@@ -13,7 +13,7 @@
 
 </style>
 <body>
-<textarea id="stack_yaml" style="display:none">
+<textarea id="stack_yaml" rows="30" cols="70">
 heat_template_version: 2013-05-23
 
 description: >
@@ -79,6 +79,15 @@ outputs:
     description: The IP addresses of the deployed instance
     value: { get_attr: [my_instance, networks] }
 </textarea>
+
+<span id="stack-d3vis"></span>
+<div id="option">
+    <input name="updateButton" 
+           type="button" 
+           value="Update" 
+           onclick="updateData()" />
+</div>
+</body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="yaml.js"></script>
@@ -92,9 +101,16 @@ var json = {
 var resources = getChildren("resources",document.getElementById("stack_yaml").value);
 
 function getNodes() {
-
+	
+	var yaml = document.getElementById("stack_yaml").value;
+	
 	for(var i=0;i<resources.length;i++) {
-		var node = {name:resources[i],group:1};
+		var node_content = extractNode(resources[i], yaml);
+		var resource_type_unformatted = extractNode("type",node_content);
+		var resource_types = resource_type_unformatted.replace("type: OS::","").split("::");
+		
+		var node = {name:resources[i],type0:resource_types[0],type1:resource_types[1]};
+		
 		json["nodes"].push(node);
 		}
 }
@@ -124,7 +140,7 @@ function find_linked_resources(source) {
 	var node_label = "";
 	
 	while(foundpos > -1)
-		{	
+		{
 			linked_resource = source.substring(foundpos+"get_resource:".length, source.indexOf("}", foundpos)).trim();
 			
 			//find node containing linked value (using a very dumb algorithm)
@@ -132,7 +148,7 @@ function find_linked_resources(source) {
 			
 			while(i>=0) {
 				if (source[i] == '\n') {
-					node_label = source.substring(i+1,source.indexOf(":",i));
+					node_label = source.substring(i+1,source.indexOf(":",i)).trim();
 					break;
 					}
 				else {
@@ -148,17 +164,34 @@ function find_linked_resources(source) {
 }
 	
 
-getNodes();
-getLinks();
+updateData();
 
-var width = 960,
-    height = 500
+function updateData() {
+	resources = getChildren("resources",document.getElementById("stack_yaml").value);
+	document.getElementById("stack-d3vis").innerHTML ="";
+	document.getElementById("stack-d3vis").value = "";
+	
+	json = {
+			nodes:[],
+			links:[]
+			};
+			
+	getNodes();
+	getLinks();
+	
+	var width = 600,
+    height = 400
 
-var svg = d3.select("body").append("svg")
+	if (typeof maybeObject != "undefined") {
+	alert("GOT THERE");
+	}
+	var svg = d3.select("#stack-d3vis").append("svg")
     .attr("width", width)
     .attr("height", height);
-
-var force = d3.layout.force()
+	
+	var force;
+	
+	force = d3.layout.force()
     .gravity(0.05)
     .distance(100)
     .charge(-100)
@@ -166,7 +199,7 @@ var force = d3.layout.force()
 
 	force.linkDistance(width/4);
 	//force.gravity(0);
-	
+
   force
       .nodes(json.nodes)
       .links(json.links)
@@ -201,17 +234,32 @@ var force = d3.layout.force()
       .attr("class", "node")
       .call(force.drag);
 
-  node.append("image")
-      .attr("xlink:href", "https://wiki.openstack.org/w/images/thumb/c/c4/OpenStack_Logo_-_notext.png/30px-OpenStack_Logo_-_notext.png")
-      .attr("x", -8)
-      .attr("y", -8)
-      .attr("width", 30)
-      .attr("height", 30);
+	  
+  node.append("circle")
+    .attr("r", 25)
+	.attr("stroke","black")
+        .attr("fill", "gray");
 
   node.append("text")
-      .attr("dx", 24)
+      .attr("dx", 27)
       .attr("dy", ".35em")
       .text(function(d) { return d.name });
+
+	/*node.append("foreignObject")
+    .append("xhtml:body")
+	.attr("dx", function(d){return -40})
+	.style("font", "8px 'Helvetica Neue'")
+    .html(function(d){return d.type });*/
+  
+	
+	node.append("text")
+	    .attr("dx", function(d){return -20})
+	    .text(function(d){return d.type0 })
+	
+	node.append("text")
+	    .attr("dx", function(d){return -20})
+		.attr("dy", function(d){return 10})
+	    .text(function(d){return d.type1 })
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -229,5 +277,7 @@ var force = d3.layout.force()
             return ((d.source.y + d.target.y)/2);
         });
   });
+
+ }
 
 </script>

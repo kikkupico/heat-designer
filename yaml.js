@@ -7,19 +7,49 @@ function replaceAll(str, find, replace) {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
+function helper_locateNode(node, source) {
+	// if node is found at start, return start; else regex match with various possibilities
+	if(source.indexOf(node+":")== 0)
+		{
+			return 0;
+			}
+	
+	re = new RegExp("(\n{1,}| {1,})"+node+":");
+	return source.search(re)
+}
+
+
 function getNodeStart(node, source) {
-	node_start = source.indexOf(node+":")-getIndentLevel(node,source);
-	if (node_start == -1)
+
+	// if node is found at start, return start; else regex match with various possibilities
+	if(source.indexOf(node+":")== 0)
+		{
+			return 0;
+			}
+	
+	re = new RegExp("(\n{1,}| {1,})"+node+":");
+	
+	node_loc = source.search(re);
+	
+	if (node_loc == -1)
 	{
 		throw "ERROR:Node not Found!";
 	}
+	
 	else
 	{
-		return node_start;
+		//omit preceding newline characters
+		while(source[node_loc] == '\n')
+		{
+			node_loc++;
+			}
+		
+		//alert("node loc: "+node_loc+"--->"+source.substring(node_loc,node_loc+10));
+		return node_loc;
 		}
 }
 
-function getIndentString(node,source) {
+function getIndentString(node,source) { //DO NOT USE!! Function not updated to included fixes in getIndentLevel
 	pos = getNodeStart(node, source);
 	//alert("Position in Indent Level funtion" + pos);
 		
@@ -47,34 +77,16 @@ function getIndentString(node,source) {
 }
 
 function getIndentLevel(node,source) {
-	pos = source.indexOf(node+":"); //not using getNodeStart because getNodeStart requires getIndentLevel
-	//alert("Position in Indent Level funtion" + pos);
-	
-	if (pos == -1)
+
+	pos = getNodeStart(node, source);
+	//alert(pos);
+	indent_level = 0;
+	while(source[pos] == ' ')
 	{
-		throw "ERROR:Node not Found!";
-	}
-		
-	//logic for zero indent level
-	if (pos ==0) {
-		return 0;
+		indent_level++;
+		pos++;
 		}
-	if(source[pos-1] == '\n')
-	{
-		return 0;
-		}
-		
-	var i=1;
-	indent_string = "";
-	while(source[pos-i] != '\n')
-	{
-		//alert(source[pos-i]);
-		if (source[pos-i] != ' ') {
-			return -1;
-		}
-		i=i+1;
-	}
-	return i-1;
+	return indent_level;	
 }
 
 function getIndentLevel_UI() {
@@ -108,7 +120,7 @@ function getNodeEnd(node, source) {
 	node_end = node_start+source.substring(node_start).search(re);
 	//alert(node_end);
 	
-	//handle last node case - this part requires better code and possibly refacting of the whole function
+	//handle last node case - this part requires better code and possibly refactoring of the whole function
 	if(node_end+1 == node_start)
 	{
 		node_end = source.length-1;
@@ -162,14 +174,15 @@ function copyNode_UI() {
 function getChildren(node, source) {
 	node_contents = extractNode(node, source);
 	child_indent_level = getIndentLevel(node, source)+2;
-	match_regex_pattern = "\n {"+child_indent_level+","+child_indent_level+"}(?! ).*(?=:)";
+	match_regex_pattern = "\n{1,} {"+child_indent_level+"}(?! ).*(?=:)";
 	//alert(regex_pattern);
 	//alert(node_contents);
 	match_regex = new RegExp(match_regex_pattern,"g");
 	children = node_contents.match(match_regex);
+	//alert(children);
 	
 	//removing preceding characters because JS doesn't support look behind
-	strip_regex_pattern = "\n {"+child_indent_level+","+child_indent_level+"}(?! )";
+	strip_regex_pattern = "\n{1,} {"+child_indent_level+"}(?! )";
 	strip_regex = new RegExp(strip_regex_pattern,"g");
 	
 	var i;
@@ -187,13 +200,13 @@ function getChildren_UI()
 	source = document.getElementById("stack-yaml").value;
 	children = getChildren(node,source);
 	alert(children);
-	alert(children.length);
+	//alert(children.length);
 	var j;
 	
-	for(j=0;j<children.length;j++){
+	/*for(j=0;j<children.length;j++){
 		alert(j+".>"+children[j]+"<");
 		alert(extractNode(children[j], extractNode(node,source)));
-	}
+	}*/
 }
 
 function replaceNode(node, source, new_node_content) { //note: this function will directly replace contents without checking correctness

@@ -17,13 +17,17 @@
 <!-- Latest sortable library -->
 <script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
 
-<!-- My styles and scripts -->
+<!-- Latest d3 library -->
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<!-- My styles -->
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="resource-icon.css">
 
 <!-- heat-designer scripts -->
 <script src="yaml.js"></script>
 <script src="heat-designer.js"></script>
+<script src="heat-visualize.js"></script>
 
 </head>
 
@@ -161,9 +165,8 @@ outputs:
 				
 				</nav>
 			<div class="pre-scrollable" id="stack_graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:80vh; background: url('http://i.stack.imgur.com/GySvQ.png')">
-				
-			
 			</div>
+			<div id="stack-d3vis" style ='background-color: #eeeeee;'></div>
 			
 		</div>
 			

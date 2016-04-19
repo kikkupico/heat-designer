@@ -44,6 +44,8 @@ $(document).on("click", "a.delete_button" , function() {
 			doc_yaml = document.getElementById("stack_yaml").value;
 			edited_yaml = removeNode(node_name,doc_yaml);
 			document.getElementById("stack_yaml").value =  edited_yaml;
+			updateData();
+
         });
 
 //edit properties button function
@@ -82,6 +84,8 @@ function saveProperties() {
 	oldSource = document.getElementById("stack_yaml").value;
 	newProperties = document.getElementById("node_properties_editable").value;
 	document.getElementById("stack_yaml").value = setChild(node_label, oldSource, "properties", newProperties);
+	updateData();
+
 }
 
 
@@ -130,4 +134,5 @@ function drop(ev) {
 	var node_content = node_sample.replace(resource_type+":", nodeCopy.id+":");
 	//alert(node_content);
 	document.getElementById("stack_yaml").value+=node_content;
+	updateData();
 }

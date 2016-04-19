@@ -1,3 +1,12 @@
 .move-cursor-style {
   cursor:move;
 }
+
+.link {
+  stroke: #ccc;
+}
+
+.node text {
+  pointer-events: none;
+  font: 10px sans-serif;
+}

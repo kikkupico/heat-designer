@@ -4,7 +4,7 @@ var json = {
   links:[]
 };
 
-var resources = getChildren("resources",document.getElementById("stack_yaml").value);
+//var resources = getChildren("resources",document.getElementById("stack_yaml").value);
 
 function getNodes() {
 	
@@ -13,9 +13,9 @@ function getNodes() {
 	for(var i=0;i<resources.length;i++) {
 		var node_content = extractNode(resources[i], yaml);
 		var resource_type_unformatted = extractNode("type",node_content);
-		var resource_types = resource_type_unformatted.replace("type: OS::","").split("::");
+		var resource_type = resource_type_unformatted.replace("type: OS::","").trim();
 		
-		var node = {name:resources[i],type0:resource_types[0],type1:resource_types[1]};
+		var node = {name:resources[i],type:resource_type, "data-toggle":"popover"};
 		
 		json["nodes"].push(node);
 		}
@@ -68,12 +68,22 @@ function find_linked_resources(source) {
 		}
 	return linked_resources;
 }
-	
 
-updateData();
+function getHorizonIcon(resource_type) {
+
+	switch(resource_type) {
+		case "Nova::Server":
+			return "images/horizon-icons/server-green.svg";
+		case "Neutron::Net":
+			return "images/horizon-icons/network-green.svg";
+		default:
+			return "images/horizon-icons/unknown-green.svg";
+	}
+}
 
 function updateData() {
-	resources = getChildren("resources",document.getElementById("stack_yaml").value);
+	
+	//empty json data and html views
 	document.getElementById("stack-d3vis").innerHTML ="";
 	document.getElementById("stack-d3vis").value = "";
 	
@@ -81,6 +91,14 @@ function updateData() {
 			nodes:[],
 			links:[]
 			};
+	
+	resources = getChildren("resources",document.getElementById("stack_yaml").value);
+	
+	//if no resources are found, exit function
+	if (resources.length == 0)
+	{
+		return;
+		}
 			
 	getNodes();
 	getLinks();
@@ -141,15 +159,43 @@ function updateData() {
       .call(force.drag);
 
 	  
-  node.append("circle")
-    .attr("r", 25)
-	.attr("stroke","black")
-        .attr("fill", "gray");
+  node.append("image")
+      .attr("xlink:href", function(d) { return getHorizonIcon(d.type) })
+      .attr("x", -8)
+      .attr("y", -8)
+      .attr("width", 48)
+      .attr("height", 48);
 
-  node.append("text")
-      .attr("dx", 27)
+  /*node.append("text")
+	  .attr("data-toggle","popover")
+	  .attr("data-trigger","focus")
+	  .attr("tabindex",0)
+	  .attr("data-container","#stack_graphical")
+      .attr("dx", 36)
       .attr("dy", ".35em")
-      .text(function(d) { return d.name });
+      .text(function(d) { return d.name });*/
+
+	  node.append('svg:foreignObject')
+	  .attr("dx", 36)
+      .attr("dy", ".35em")
+    .attr('width', "100%")
+    .attr('height', "100%")
+    .append('xhtml:span')
+    .attr("class","resource-id")
+	.attr("id",function(d) { return d.name })
+    .attr("data-toggle","popover")
+	.attr("data-trigger","focus")
+	.attr("tabindex",0)
+	.attr("data-container","#stack-d3vis")
+    .html(function(d) { return d.name })
+    .each(function(){
+        $(this).popover({
+            html: true, 
+			content: function() {
+					return $('#popover-content').html();
+				}
+			})
+		});
 
 	/*node.append("foreignObject")
     .append("xhtml:body")
@@ -158,14 +204,14 @@ function updateData() {
     .html(function(d){return d.type });*/
   
 	
-	node.append("text")
+	/*node.append("text")
 	    .attr("dx", function(d){return -20})
 	    .text(function(d){return d.type0 })
 	
 	node.append("text")
 	    .attr("dx", function(d){return -20})
 		.attr("dy", function(d){return 10})
-	    .text(function(d){return d.type1 })
+	    .text(function(d){return d.type1 })*/
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })

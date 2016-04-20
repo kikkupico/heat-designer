@@ -14,9 +14,6 @@
 <!-- Latest compiled and minified bootstrap js -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-<!-- Latest sortable library -->
-<script src="http://rubaxa.github.io/Sortable/Sortable.js"></script>
-
 <!-- Latest d3 library -->
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
@@ -164,11 +161,9 @@ outputs:
 				</button></div> </h4>
 				
 				</nav>
-			<div class="pre-scrollable" id="stack_graphical" ondrop="drop(event)" ondragover="allowDrop(event)" style="height:80vh; background: url('http://i.stack.imgur.com/GySvQ.png')">
-			</div>
-			<div id="stack-d3vis" style ='background-color: #eeeeee;'></div>
+			<div id="stack-d3vis" style ="height:80vh; background-color:#eeeeee; " ondrop="drop_new(event)" ondragover="allowDrop(event)" ></div>
 			
-		</div>
+		</div> 
 			
 		<div class="col-md-3" style ='background-color: #444444;margin-bottom: -99999px; padding-bottom: 99999px;'>
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>

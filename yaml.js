@@ -179,6 +179,13 @@ function getChildren(node, source) {
 	//alert(node_contents);
 	match_regex = new RegExp(match_regex_pattern,"g");
 	children = node_contents.match(match_regex);
+	
+	//return empty array if no children found
+	if (children == null)
+	{
+		return [];
+		}
+
 	//alert(children);
 	
 	//removing preceding characters because JS doesn't support look behind

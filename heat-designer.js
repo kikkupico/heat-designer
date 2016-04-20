@@ -36,16 +36,13 @@ bindPopOvers();
 //delete button function
 $(document).on("click", "a.delete_button" , function() {
 			popOverId = $(this).parent().parent().attr("id");
-			node_name = $('[aria-describedby="'+popOverId+'"]').attr("id");
+			resource_id = $('[aria-describedby="'+popOverId+'"]').attr("id");
 			//alert(popOverId);
-			//alert(resource_type);
-			$('[aria-describedby="'+popOverId+'"]').remove();
-            $(this).parent().parent().remove();
+			//alert(resource_id);
 			doc_yaml = document.getElementById("stack_yaml").value;
-			edited_yaml = removeNode(node_name,doc_yaml);
+			edited_yaml = removeNode(resource_id,doc_yaml);
 			document.getElementById("stack_yaml").value =  edited_yaml;
 			updateData();
-
         });
 
 //edit properties button function
@@ -69,6 +66,9 @@ $('#edit_properties').on('show.bs.modal', function (event) {
   //modal.find('.modal-title').text(node_label)
   //modal.find('.modal-body textarea').text(properties)
 })
+
+
+updateData();
 
 }
 
@@ -108,7 +108,6 @@ function init_hot_yaml(){
 
 document.getElementById("stack_yaml").value=extractNode("heat_template_version",sample_yaml)+"\nresources:\n";
 
-	Sortable.create(stack_graphical, { /* options */ });
 }
 
 function drop(ev) {
@@ -132,6 +131,21 @@ function drop(ev) {
 //alert('entered');
 	var node_sample = extractNode(resource_type,sample_yaml);
 	var node_content = node_sample.replace(resource_type+":", nodeCopy.id+":");
+	//alert(node_content);
+	document.getElementById("stack_yaml").value+=node_content;
+	updateData();
+}
+
+function drop_new(ev) {
+//alert('entered');
+    ev.preventDefault();
+	var data = ev.dataTransfer.getData("text");
+	
+   	var resource_type = document.getElementById(data).getAttribute("resource-type");
+  	var node_sample = extractNode(resource_type,sample_yaml);
+	var id = resource_type+'_'+Math.random().toString(36).substring(3,6);
+	
+	var node_content = node_sample.replace(resource_type+":", id+":");
 	//alert(node_content);
 	document.getElementById("stack_yaml").value+=node_content;
 	updateData();

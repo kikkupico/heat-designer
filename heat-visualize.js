@@ -76,6 +76,16 @@ function getHorizonIcon(resource_type) {
 			return "images/horizon-icons/server-green.svg";
 		case "Neutron::Net":
 			return "images/horizon-icons/network-green.svg";
+		case "Cinder::Volume":
+			return "images/horizon-icons/volume-green.svg";
+		case "Neutron::Port":
+			return "images/horizon-icons/port-green.svg";
+		case "Neutron::SecurityGroup":
+			return "images/horizon-icons/securitygroup-green.svg";
+		case "Neutron::FloatingIP":
+			return "images/horizon-icons/floatingip-green.svg";
+		case "Neutron::Router":
+			return "images/horizon-icons/router-green.svg";
 		default:
 			return "images/horizon-icons/unknown-green.svg";
 	}
@@ -104,11 +114,8 @@ function updateData() {
 	getLinks();
 	
 	var width = 600,
-    height = 400
+    height = 600
 
-	if (typeof maybeObject != "undefined") {
-	alert("GOT THERE");
-	}
 	var svg = d3.select("#stack-d3vis").append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -116,14 +123,23 @@ function updateData() {
 	var force;
 	
 	force = d3.layout.force()
-    .gravity(0.05)
-    .distance(100)
-    .charge(-100)
+      .gravity(0.1)
+      .charge(-2000)
     .size([width, height]);
 
-	force.linkDistance(width/4);
+	force.linkDistance(100);
 	//force.gravity(0);
 
+	/*d3.layout.force() 
+      .nodes(graph.nodes)
+      .links([])
+      .gravity(0.1)
+      .charge(-2000)
+      .linkDistance(100)
+      .size([width, height])
+      .on("tick", tick)*/
+	
+	
   force
       .nodes(json.nodes)
       .links(json.links)

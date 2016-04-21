@@ -113,7 +113,7 @@ function updateData() {
 	getNodes();
 	getLinks();
 	
-	var width = 600,
+	var width = 800,
     height = 600
 
 	var svg = d3.select("#stack-d3vis").append("svg")
@@ -192,8 +192,6 @@ function updateData() {
       .text(function(d) { return d.name });*/
 
 	  node.append('svg:foreignObject')
-	  .attr("dx", 36)
-      .attr("dy", ".35em")
     .attr('width', "100%")
     .attr('height', "100%")
     .append('xhtml:span')
@@ -203,7 +201,7 @@ function updateData() {
 	.attr("data-trigger","focus")
 	.attr("tabindex",0)
 	.attr("data-container","#stack-d3vis")
-    .html(function(d) { return d.name })
+    .html(function(d) { return "<br><br>"+d.name })
     .each(function(){
         $(this).popover({
             html: true, 

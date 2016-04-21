@@ -17,6 +17,7 @@ sample_yaml = document.getElementById("sample_yaml").value;
 
 //create toolbox icons for each resource type
 resources = getChildren("resources",sample_yaml);
+resources.sort();
 var i;
 for(i=0;i<resources.length;i++){
 	icon_html = document.getElementById("resource-icon-sample").cloneNode(true);
@@ -25,8 +26,8 @@ for(i=0;i<resources.length;i++){
 	icon_html.setAttribute("resource-type",resources[i]);
 	node = extractNode(resources[i],sample_yaml);
 	resource_type_unformatted = extractNode("type",node);
-	resource_type = resource_type_unformatted.replace("type: OS::","").replace("::","<br>");
-	icon_html.getElementsByTagName("header")[0].innerHTML = resource_type;
+	resource_type = resource_type_unformatted.replace("type: OS::","");
+	icon_html.innerHTML = resource_type;
 	//alert(resources[i]);
 	document.getElementById("resource-tools").innerHTML += icon_html.outerHTML;
 	}

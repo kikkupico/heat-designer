@@ -241,8 +241,17 @@ outputs:
 			<nav class="navbar navbar-inverse" role="navigation" style ='color: #cccccc'>
 			<tag class="navbar-brand">
 					YAML Template
-				</tag></nav>
-			<textarea disabled class="form-control" rows="35" style="min-width: 100%; height: 100%;" id="stack_yaml" style ='color: #cccccc'>
+				</tag>
+				<div class="btn-group btn pull-right">
+				 
+				<button class="btn btn-default navbar-btn " type="button" onclick="updateData()">
+					Save
+				</button> 
+				<button class="btn btn-default navbar-btn" type="button">
+					Deploy
+				</button></div> 
+				</nav>
+			<textarea class="form-control" rows="35" style="min-width: 100%; height: 100%;" id="stack_yaml" style ='color: #cccccc'>
 				
 			</textarea>
 		</div>
@@ -252,7 +261,7 @@ outputs:
   <a href="#" class="list-group-item list-group-item-danger delete_button">Delete</a>
   <a href="#" class="list-group-item edit_properties_button" data-toggle="modal" data-target="#edit_properties">Edit Properties</a>
 </div>
-<div id="resource-icon-sample" class="hide column" resource-type="volume" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)">
+<div id="resource-icon-sample" class="hide alert alert-success" role="alert" resource-type="volume" type="button" data-html="true" id="icon-node" draggable="true" ondragstart="drag(event)">
 <header></header>
 </div>
 <!-- Modal -->

@@ -187,6 +187,24 @@ outputs:
 				<div class="panel-heading">
 				  <h4 class="panel-title">
 					<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+					Stacks</a>
+				  </h4>
+				</div>
+				<div id="collapse1" class="panel-collapse collapse">
+				  <div class="panel-body">
+				<button class="btn btn-default navbar-btn " type="button" onclick="load_vm_with_cinder()">
+					vm_with_cinder
+				</button><br>
+				<button class="btn btn-default navbar-btn " type="button" onclick="servers_in_new_neutron_net()">
+					servers_in_new_neutron_net
+				</button>
+				</div>
+				</div>
+			  </div>
+			  <div class="panel panel-default">
+				<div class="panel-heading">
+				  <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
 					Parameters</a>
 				  </h4>
 				</div>
@@ -284,5 +302,185 @@ outputs:
       </div>
     </div>
   </div>
+<textarea style="display:none;" id="vm_with_cinder">#
+heat_template_version: 2013-05-23
+
+description: >
+  A HOT template that holds a VM instance with an attached
+  Cinder volume.  The VM does nothing, it is only created.
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing key pair to use for the instance
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must name a public key (pair) known to Nova
+  flavor:
+    type: string
+    description: Flavor for the instance to be created
+    default: m1.small
+    constraints:
+      - custom_constraint: nova.flavor
+        description: Must be a flavor known to Nova
+  image:
+    type: string
+    description: >
+      Name or ID of the image to use for the instance.
+      You can get the default from
+      http://cloud.fedoraproject.org/fedora-20.x86_64.qcow2
+      There is also
+      http://cloud.fedoraproject.org/fedora-20.i386.qcow2
+      Any image should work since this template
+      does not ask the VM to do anything.
+    constraints:
+      - custom_constraint: glance.image
+        description: Must identify an image known to Glance
+  network:
+    type: string
+    description: The network for the VM
+    default: private
+  vol_size:
+    type: number
+    description: The size of the Cinder volume
+    default: 1
+
+resources:
+  my_instance:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks: [{network: {get_param: network} }]
+  my_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: vol_size }
+  vol_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: my_instance }
+      volume_id: { get_resource: my_vol }
+      mountpoint: /dev/vdb
+
+outputs:
+  instance_networks:
+    description: The IP addresses of the deployed instance
+    value: { get_attr: [my_instance, networks] }</textarea>
+<textarea style="display:none;" id="servers_in_new_neutron_net">heat_template_version: 2013-05-23
+
+description: >
+  HOT template to create a new neutron network plus a router to the public
+  network, and for deploying two servers into the new network. The template also
+  assigns floating IP addresses to each server so they are routable from the
+  public network.
+parameters:
+  key_name:
+    type: string
+    description: Name of keypair to assign to servers
+  image:
+    type: string
+    description: Name of image to use for servers
+  flavor:
+    type: string
+    description: Flavor to use for servers
+  public_net:
+    type: string
+    description: >
+      ID or name of public network for which floating IP addresses will be allocated
+  private_net_name:
+    type: string
+    description: Name of private network to be created
+  private_net_cidr:
+    type: string
+    description: Private network address (CIDR notation)
+  private_net_gateway:
+    type: string
+    description: Private network gateway address
+  private_net_pool_start:
+    type: string
+    description: Start of private network IP address allocation pool
+  private_net_pool_end:
+    type: string
+    description: End of private network IP address allocation pool
+
+resources:
+  private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: private_net_name }
+  private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: private_net }
+      cidr: { get_param: private_net_cidr }
+      gateway_ip: { get_param: private_net_gateway }
+      allocation_pools:
+        - start: { get_param: private_net_pool_start }
+          end: { get_param: private_net_pool_end }
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: { get_param: public_net }
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: private_subnet }
+  server1:
+    type: OS::Nova::Server
+    properties:
+      name: Server1
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      networks:
+        - port: { get_resource: server1_port }
+  server1_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: private_subnet }
+  server1_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_net }
+      port_id: { get_resource: server1_port }
+  server2:
+    type: OS::Nova::Server
+    properties:
+      name: Server2
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      networks:
+        - port: { get_resource: server2_port }
+  server2_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: private_subnet }
+  server2_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_net }
+      port_id: { get_resource: server2_port }
+
+outputs:
+  server1_private_ip:
+    description: IP address of server1 in private network
+    value: { get_attr: [ server1, first_address ] }
+  server1_public_ip:
+    description: Floating IP address of server1 in public network
+    value: { get_attr: [ server1_floating_ip, floating_ip_address ] }
+  server2_private_ip:
+    description: IP address of server2 in private network
+    value: { get_attr: [ server2, first_address ] }
+  server2_public_ip:
+    description: Floating IP address of server2 in public network
+    value: { get_attr: [ server2_floating_ip, floating_ip_address ] }</textarea>
 </body>
 </html>

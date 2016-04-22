@@ -151,3 +151,14 @@ function drop_new(ev) {
 	document.getElementById("stack_yaml").value+=node_content;
 	updateData();
 }
+
+
+function load_vm_with_cinder() {
+	document.getElementById("stack_yaml").value = document.getElementById("vm_with_cinder").value;
+	updateData();
+}
+
+function servers_in_new_neutron_net() {
+	document.getElementById("stack_yaml").value = document.getElementById("servers_in_new_neutron_net").value;
+	updateData();
+}
